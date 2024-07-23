@@ -1,22 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Registro de Pesca</title>
+    <meta charset="UTF-8">
+    <title>Mapa de Capturas - Embalse de Gabriel y Galán</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 600px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Registro de Pesca en el Embalse de Gabriel y Galán</h1>
-    <form action="{{ url_for('add_catch') }}" method="post">
-        <label for="fish">Tipo de Pez:</label>
-        <select name="fish" id="fish">
-            {% for fish in fish_types %}
-                <option value="{{ fish }}">{{ fish }}</option>
-            {% endfor %}
-        </select><br><br>
-        <label for="latitude">Latitud:</label>
-        <input type="text" id="latitude" name="latitude" required><br><br>
-        <label for="longitude">Longitud:</label>
-        <input type="text" id="longitude" name="longitude" required><br><br>
-        <button type="submit">Añadir Captura</button>
+    <h1>Registro de Capturas - Embalse de Gabriel y Galán</h1>
+    <div id="map"></div>
+    <form id="captureForm" method="POST" action="/add_capture">
+        <input type="hidden" id="latitude" name="latitude" required>
+        <input type="hidden" id="longitude" name="longitude" required>
+        <label for="date">Fecha:</label>
+        <input type="date" id="date" name="date" required>
+        <label for="fish">Especie de Pez:</label>
+        <select id="fish" name="fish" required>
+            <option value="Carpa común">Carpa común</option>
+            <option value="Barbo común">Barbo común</option>
+            <option value="Lucioperca">Lucioperca</option>
+            <option value="Lucio">Lucio</option>
+            <option value="Black Bass (Perca americana)">Black Bass (Perca americana)</option>
+            <option value="Boga">Boga</option>
+            <option value="Alburno">Alburno</option>
+            <option value="Tenca">Tenca</option>
+            <option value="Percasol">Percasol</option>
+            <option value="Pez gato">Pez gato</option>
+            <option value="Siluro">Siluro</option>
+            <option value="Trucha arcoíris">Trucha arcoíris</option>
+            <option value="Trucha común">Trucha común</option>
+            <option value="Anguila">Anguila</option>
+            <option value="Gobio">Gobio</option>
+            <option value="Rutilo">Rutilo</option>
+            <option value="Madrilla">Madrilla</option>
+            <option value="Pez sol">Pez sol</option>
+        </select>
+        <button type="submit">Guardar Captura</button>
     </form>
+
+    <script>
+        var map = L.map('map').setView([40.207, -6.084], 14);  // Coordenadas del embalse de Gabriel y Galán
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker;
+
+        map.on('click', function(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+        });
+
+        // Cargar y mostrar las capturas existentes
+        fetch('/get_captures')
+            .then(response => response.json())
+            .then(data => {
+                data.captures.forEach(capture => {
+                    L.marker([capture.latitude, capture.longitude])
+                        .bindPopup(`<b>${capture.fish}</b><br>${new Date(capture.date).toLocaleDateString()}`)
+                        .addTo(map);
+                });
+            });
+    </script>
 </body>
 </html>

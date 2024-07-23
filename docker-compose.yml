@@ -6,15 +6,15 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgres://fapzcqgmwo:S$qOCENe4BQh1T91@db:5432/e-pesca-gabrielygalan-database
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     depends_on:
       - db
 
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: e-pesca-gabrielygalan-database
-      POSTGRES_USER: fapzcqgmwo
-      POSTGRES_PASSWORD: S$qOCENe4BQh1T91
+      - POSTGRES_DB=e-pesca-gabrielygalan-database
+      - POSTGRES_USER=fapzcqgmwo
+      - POSTGRES_PASSWORD=S$qOCENe4BQh1T91
     ports:
       - "5432:5432"
