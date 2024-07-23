@@ -15,7 +15,14 @@ DATABASE = {
 }
 
 def init_db():
-    conn = psycopg2.connect(**DATABASE)
+    conn = psycopg2.connect(
+        dbname='e-pesca-gabrielygalan-database',
+        user='fapzcqgmwo',
+        password='S$qOCENe4BQh1T91',
+        host='e-pesca-gabrielygalan-server.postgres.database.azure.com',
+        port='5432',
+        sslmode='require'
+    )
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS catches (
