@@ -7,12 +7,14 @@ app = Flask(__name__)
 
 # Configuración de la base de datos
 DATABASE = {
-    'dbname': 'nombre_de_tu_base_de_datos',
-    'user': 'tu_usuario',
-    'password': 'tu_contraseña',
-    'host': 'localhost',
-    'port': '5432'
+    'dbname': 'e-pesca-gabrielygalan-database',
+    'user': 'fapzcqgmwo',
+    'password': 'S$qOCENe4BQh1T91',
+    'host': 'e-pesca-gabrielygalan-server.postgres.database.azure.com',
+    'port': 5432
 }
+
+import psycopg2
 
 def init_db():
     conn = psycopg2.connect(
@@ -40,8 +42,10 @@ def init_db():
 init_db()
 
 # Lista de peces permitidos
-FISH_TYPES = ["Lucio", "Carpa", "Perca Sol", "Black Bass", "Barbo"]
-
+FISH_TYPES = [
+    "Carpa Común", "Carpa Real", "Black Bass", "Barbo Común", 
+    "Barbo Gitano", "Perca Sol", "Lucio", "Trucha Común", "Trucha Arcoíris"
+]
 @app.route('/')
 def index():
     return render_template('index.html', fish_types=FISH_TYPES)
