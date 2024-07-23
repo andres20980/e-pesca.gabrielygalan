@@ -1,24 +1,33 @@
 from flask import Flask, render_template, request, redirect, url_for
 import folium
-import sqlite3
+import psycopg2
 from datetime import datetime
 
 app = Flask(__name__)
 
 # Configuración de la base de datos
-DATABASE = 'fishing_data.db'
+DATABASE = {
+    'dbname': 'nombre_de_tu_base_de_datos',
+    'user': 'tu_usuario',
+    'password': 'tu_contraseña',
+    'host': 'localhost',
+    'port': '5432'
+}
 
 def init_db():
-    conn = sqlite3.connect(DATABASE)
+    conn = psycopg2.connect(**DATABASE)
     cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS catches (
-                        id INTEGER PRIMARY KEY,
-                        date TEXT,
-                        fish TEXT,
-                        latitude REAL,
-                        longitude REAL
-                      )''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS catches (
+            id SERIAL PRIMARY KEY,
+            date TIMESTAMP,
+            fish VARCHAR(50),
+            latitude REAL,
+            longitude REAL
+        )
+    ''')
     conn.commit()
+    cursor.close()
     conn.close()
 
 init_db()
@@ -37,21 +46,23 @@ def add_catch():
     latitude = request.form['latitude']
     longitude = request.form['longitude']
     
-    conn = sqlite3.connect(DATABASE)
+    conn = psycopg2.connect(**DATABASE)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO catches (date, fish, latitude, longitude) VALUES (?, ?, ?, ?)",
+    cursor.execute("INSERT INTO catches (date, fish, latitude, longitude) VALUES (%s, %s, %s, %s)",
                    (date, fish, latitude, longitude))
     conn.commit()
+    cursor.close()
     conn.close()
     
     return redirect(url_for('map'))
 
 @app.route('/map')
 def map():
-    conn = sqlite3.connect(DATABASE)
+    conn = psycopg2.connect(**DATABASE)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM catches")
     catches = cursor.fetchall()
+    cursor.close()
     conn.close()
     
     # Crear el mapa
