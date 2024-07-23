@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro de Pesca</title>
+</head>
+<body>
+    <h1>Registro de Pesca en el Embalse de Gabriel y Galán</h1>
+    <form action="{{ url_for('add_catch') }}" method="post">
+        <label for="fish">Tipo de Pez:</label>
+        <select name="fish" id="fish">
+            {% for fish in fish_types %}
+                <option value="{{ fish }}">{{ fish }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="latitude">Latitud:</label>
+        <input type="text" id="latitude" name="latitude" required><br><br>
+        <label for="longitude">Longitud:</label>
+        <input type="text" id="longitude" name="longitude" required><br><br>
+        <button type="submit">Añadir Captura</button>
+    </form>
+</body>
+</html>
