@@ -6,49 +6,160 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin: 20px 0;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+        }
         #map {
             height: 600px;
+            width: 70%;
+            margin-right: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            position: relative;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        input, select, button {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .legend {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            width: 100%;
+        }
+        .legend h4 {
+            width: 100%;
+            margin: 0 0 10px 0;
+            grid-column: span 2;
+        }
+        .legend div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend div span {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
     <h1>Registro de Capturas - Embalse de Gabriel y Galán</h1>
-    <div id="map"></div>
-    <form id="captureForm" method="POST" action="/add_capture">
-        <input type="hidden" id="latitude" name="latitude" required>
-        <input type="hidden" id="longitude" name="longitude" required>
-        <label for="date">Fecha:</label>
-        <input type="date" id="date" name="date" required>
-        <label for="fish">Especie de Pez:</label>
-        <select id="fish" name="fish" required>
-            <option value="Carpa común">Carpa común</option>
-            <option value="Barbo común">Barbo común</option>
-            <option value="Lucioperca">Lucioperca</option>
-            <option value="Lucio">Lucio</option>
-            <option value="Black Bass (Perca americana)">Black Bass (Perca americana)</option>
-            <option value="Boga">Boga</option>
-            <option value="Alburno">Alburno</option>
-            <option value="Tenca">Tenca</option>
-            <option value="Percasol">Percasol</option>
-            <option value="Pez gato">Pez gato</option>
-            <option value="Siluro">Siluro</option>
-            <option value="Trucha arcoíris">Trucha arcoíris</option>
-            <option value="Trucha común">Trucha común</option>
-            <option value="Anguila">Anguila</option>
-            <option value="Gobio">Gobio</option>
-            <option value="Rutilo">Rutilo</option>
-            <option value="Madrilla">Madrilla</option>
-            <option value="Pez sol">Pez sol</option>
-        </select>
-        <button type="submit">Guardar Captura</button>
-    </form>
+    <div class="container">
+        <div id="map"></div>
+        <div>
+            <form id="captureForm" method="POST" action="/add_capture">
+                <input type="hidden" id="latitude" name="latitude" required>
+                <input type="hidden" id="longitude" name="longitude" required>
+                <label for="date">Fecha:</label>
+                <input type="date" id="date" name="date" required>
+                <label for="fish">Especie de Pez:</label>
+                <select id="fish" name="fish" required>
+                    <option value="Carpa común">Carpa común</option>
+                    <option value="Barbo común">Barbo común</option>
+                    <option value="Lucioperca">Lucioperca</option>
+                    <option value="Lucio">Lucio</option>
+                    <option value="Black Bass (Perca americana)">Black Bass (Perca americana)</option>
+                    <option value="Boga">Boga</option>
+                    <option value="Alburno">Alburno</option>
+                    <option value="Tenca">Tenca</option>
+                    <option value="Percasol">Percasol</option>
+                    <option value="Pez gato">Pez gato</option>
+                    <option value="Siluro">Siluro</option>
+                    <option value="Trucha arcoíris">Trucha arcoíris</option>
+                    <option value="Trucha común">Trucha común</option>
+                    <option value="Anguila">Anguila</option>
+                    <option value="Gobio">Gobio</option>
+                    <option value="Rutilo">Rutilo</option>
+                    <option value="Madrilla">Madrilla</option>
+                    <option value="Pez sol">Pez sol</option>
+                </select>
+                <button type="submit">Guardar Captura</button>
+            </form>
+            <div class="legend">
+                <h4>Leyenda</h4>
+                <div><span style="background-color: red;"></span>Carpa común</div>
+                <div><span style="background-color: orange;"></span>Barbo común</div>
+                <div><span style="background-color: yellow;"></span>Lucioperca</div>
+                <div><span style="background-color: green;"></span>Lucio</div>
+                <div><span style="background-color: blue;"></span>Black Bass (Perca americana)</div>
+                <div><span style="background-color: purple;"></span>Boga</div>
+                <div><span style="background-color: pink;"></span>Alburno</div>
+                <div><span style="background-color: brown;"></span>Tenca</div>
+                <div><span style="background-color: gray;"></span>Percasol</div>
+                <div><span style="background-color: black;"></span>Pez gato</div>
+                <div><span style="background-color: darkred;"></span>Siluro</div>
+                <div><span style="background-color: darkorange;"></span>Trucha arcoíris</div>
+                <div><span style="background-color: gold;"></span>Trucha común</div>
+                <div><span style="background-color: darkgreen;"></span>Anguila</div>
+                <div><span style="background-color: darkblue;"></span>Gobio</div>
+                <div><span style="background-color: indigo;"></span>Rutilo</div>
+                <div><span style="background-color: violet;"></span>Madrilla</div>
+                <div><span style="background-color: darkmagenta;"></span>Pez sol</div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        var map = L.map('map').setView([40.207, -6.084], 14);  // Coordenadas del embalse de Gabriel y Galán
+        var map = L.map('map').setView([40.207, -6.084], 13);  // Coordenadas del embalse de Gabriel y Galán
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        // Ajustar la vista para mostrar todo el embalse
+        map.fitBounds([
+            [40.184, -6.110],  // Coordenadas suroeste del embalse
+            [40.230, -6.050]   // Coordenadas noreste del embalse
+        ]);
 
         var marker;
 
@@ -61,12 +172,45 @@
             document.getElementById('longitude').value = e.latlng.lng;
         });
 
+        // Colores para las diferentes especies de peces
+        var fishColors = {
+            'Carpa común': 'red',
+            'Barbo común': 'orange',
+            'Lucioperca': 'yellow',
+            'Lucio': 'green',
+            'Black Bass (Perca americana)': 'blue',
+            'Boga': 'purple',
+            'Alburno': 'pink',
+            'Tenca': 'brown',
+            'Percasol': 'gray',
+            'Pez gato': 'black',
+            'Siluro': 'darkred',
+            'Trucha arcoíris': 'darkorange',
+            'Trucha común': 'gold',
+            'Anguila': 'darkgreen',
+            'Gobio': 'darkblue',
+            'Rutilo': 'indigo',
+            'Madrilla': 'violet',
+            'Pez sol': 'darkmagenta'
+        };
+
+        // Icono para los marcadores
+        var fishIcon = function(color) {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style='background-color:${color}; width: 12px; height: 12px; border-radius: 50%;'></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+            });
+        };
+
         // Cargar y mostrar las capturas existentes
         fetch('/get_captures')
             .then(response => response.json())
             .then(data => {
                 data.captures.forEach(capture => {
-                    L.marker([capture.latitude, capture.longitude])
+                    var color = fishColors[capture.fish] || 'red';  // Default color if fish not found in the map
+                    L.marker([capture.latitude, capture.longitude], { icon: fishIcon(color) })
                         .bindPopup(`<b>${capture.fish}</b><br>${new Date(capture.date).toLocaleDateString()}`)
                         .addTo(map);
                 });
